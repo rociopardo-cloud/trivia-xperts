@@ -1,0 +1,268 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Trivia Xperts Logística</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: one-screen phone app, dark navy "warehouse at night" look, single committed theme (brand), card stack centered */
+:root{
+  --bg:#052444; --bg-2:#062040; --card:#072850; --line:rgba(255,255,255,.10);
+  --fg:#eaeaec; --muted:#a7a7ad; --accent:#02b1c6; --accent-2:#029cb0; --accent-soft:rgba(2,177,198,.14);
+  --ok:#22c55e; --bad:#f0616d; --ink-on-accent:#03243f;
+  --display:'Sora','Inter',system-ui,sans-serif; --body:'Inter','Helvetica Neue',system-ui,-apple-system,Arial,sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;
+  background-image:radial-gradient(900px 500px at 50% -10%,rgba(2,177,198,.18),transparent 60%),
+    repeating-linear-gradient(0deg,transparent 0 38px,rgba(255,255,255,.025) 38px 39px),
+    repeating-linear-gradient(90deg,transparent 0 38px,rgba(255,255,255,.025) 38px 39px);}
+.wrap{min-height:100%;display:flex;flex-direction:column;align-items:center;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 32px;box-sizing:border-box}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:18px;font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em}
+.brand svg{width:34px;height:34px}
+.brand small{display:block;font-family:var(--body);font-weight:500;font-size:11px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;line-height:1}
+.card{width:100%;max-width:440px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 22px;box-sizing:border-box;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+h1,h2{font-family:var(--display);text-wrap:balance;margin:0}
+h1{font-size:30px;line-height:1.15;font-weight:800;letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--accent)}
+h2{font-size:21px;line-height:1.3;font-weight:700}
+p{margin:0}
+.lead{color:var(--muted);margin-top:10px}
+.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:8px}
+.rules{display:grid;gap:10px;margin:18px 0 22px;padding:0;list-style:none}
+.rules li{display:flex;gap:12px;align-items:flex-start;font-size:15px}
+.rules .n{flex:none;width:28px;height:28px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:13px}
+.btn{appearance:none;border:0;border-radius:999px;padding:14px 22px;font:600 16px var(--body);cursor:pointer;width:100%;transition:transform .08s,background .15s}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--accent);color:var(--ink-on-accent)}
+.btn-primary:hover{background:var(--accent-2)}
+.btn-ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn:focus-visible,.opt:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.field{margin-bottom:14px}
+input{width:100%;box-sizing:border-box;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;color:var(--fg);padding:13px 14px;font:16px var(--body)}
+input::placeholder{color:#70707a}
+.err{color:var(--bad);font-size:13px;margin-top:4px;min-height:18px}
+.fine{font-size:12px;color:var(--muted);margin:12px 0 16px;line-height:1.45}
+.progress{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);margin-bottom:12px;font-variant-numeric:tabular-nums}
+.bar{height:6px;border-radius:999px;background:var(--bg-2);overflow:hidden;margin-bottom:18px}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.q{font-family:var(--display);font-size:20px;font-weight:700;line-height:1.3;margin-bottom:18px;text-wrap:balance}
+.opts{display:grid;gap:10px}
+.opt{appearance:none;text-align:left;background:var(--bg-2);border:1px solid var(--line);color:var(--fg);border-radius:12px;padding:13px 14px;font:500 15px var(--body);cursor:pointer;display:flex;gap:12px;align-items:center;transition:border-color .15s,background .15s}
+.opt .k{flex:none;width:26px;height:26px;border-radius:8px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;font-family:var(--display);font-size:12px;font-weight:700;color:var(--muted)}
+.opt:hover{border-color:var(--accent)}
+.opt.right{border-color:var(--ok);background:rgba(34,197,94,.12)}
+.opt.right .k{background:var(--ok);color:#03240f;border-color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:rgba(240,97,109,.12)}
+.opt.wrong .k{background:var(--bad);color:#2a0609;border-color:var(--bad)}
+.opt[disabled]{cursor:default}
+.feedback{margin-top:14px;min-height:46px;font-size:14px;color:var(--muted);line-height:1.45}
+.feedback b{color:var(--fg)}
+.next{margin-top:14px}
+.score{font-family:var(--display);font-size:64px;font-weight:800;line-height:1;letter-spacing:-.03em;color:var(--accent);font-variant-numeric:tabular-nums}
+.score small{font-size:22px;color:var(--muted);font-weight:700;letter-spacing:0}
+.result{text-align:center;padding:8px 0 4px}
+.prize{margin:18px 0;padding:16px;border-radius:14px;border:1px dashed var(--accent);background:var(--accent-soft);font-weight:600}
+.prize .big{font-size:40px;line-height:1;display:block;margin-bottom:6px}
+.noprize{margin:18px 0;padding:16px;border-radius:14px;border:1px solid var(--line);color:var(--muted)}
+.code{font-family:var(--display);font-weight:800;letter-spacing:.14em;font-size:22px;color:var(--fg);margin-top:4px}
+.foot{margin-top:18px;font-size:12px;color:var(--muted);text-align:center}
+.foot a{color:var(--accent);text-decoration:none}
+.saving{font-size:12px;color:var(--muted);margin-top:10px;text-align:center}
+@media (prefers-reduced-motion:reduce){.bar i,.btn,.opt{transition:none}}
+</style>
+
+</head><body><div class="wrap">
+  <div class="brand">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 8l28 24M34 8L6 32" stroke="#02b1c6" stroke-width="6" stroke-linecap="round" fill="none"/><circle cx="20" cy="20" r="4" fill="#eaeaec"/></svg>
+    <div>Xperts<small>IT Consulting</small></div>
+  </div>
+
+  <!-- INTRO -->
+  <section class="card" id="view-intro">
+    <div class="eyebrow">Trivia logística</div>
+    <h1>¿Cuánto sabés de <em>depósitos y WMS</em>?</h1>
+    <p class="lead">8 preguntas rápidas sobre software para logística. Si acertás 5 o más, te llevás un regalo del stand.</p>
+    <ul class="rules">
+      <li><span class="n">1</span><span>Dejá tus datos para participar (1 minuto).</span></li>
+      <li><span class="n">2</span><span>Respondé las 8 preguntas. Son fáciles, prometido.</span></li>
+      <li><span class="n">3</span><span>Con 5 aciertos, mostrá la pantalla final en el stand y retirá tu premio.</span></li>
+    </ul>
+    <button class="btn btn-primary" id="btn-start">Quiero jugar</button>
+  </section>
+
+  <!-- REGISTRO -->
+  <section class="card" id="view-form" hidden>
+    <div class="eyebrow">Paso 1 de 2</div>
+    <h2>Contanos quién sos</h2>
+    <p class="lead" style="margin-bottom:18px">Así sabemos a quién entregarle el premio.</p>
+    <form id="reg" novalidate>
+      <div class="field"><label for="f-nombre">Nombre y apellido</label><input id="f-nombre" name="nombre" autocomplete="name" placeholder="Ej.: Laura Gómez"><div class="err" id="e-nombre"></div></div>
+      <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="laura@tuempresa.com"><div class="err" id="e-email"></div></div>
+      <div class="field"><label for="f-cargo">Cargo</label><input id="f-cargo" name="cargo" autocomplete="organization-title" placeholder="Ej.: Jefe de Depósito"><div class="err" id="e-cargo"></div></div>
+      <div class="field"><label for="f-empresa">Empresa</label><input id="f-empresa" name="empresa" autocomplete="organization" placeholder="Ej.: Logística del Sur S.A."><div class="err" id="e-empresa"></div></div>
+      <p class="fine">Al continuar aceptás que Xperts IT Consulting use tus datos para contactarte con novedades y propuestas (Ley 25.326). Podés pedir la baja escribiendo a info@xpertsconsulting.com.</p>
+      <button class="btn btn-primary" type="submit">Empezar la trivia</button>
+    </form>
+  </section>
+
+  <!-- PREGUNTAS -->
+  <section class="card" id="view-quiz" hidden>
+    <div class="progress"><span id="p-label">Pregunta 1 de 8</span><span id="p-score">0 aciertos</span></div>
+    <div class="bar"><i id="p-bar"></i></div>
+    <div class="q" id="q-text"></div>
+    <div class="opts" id="q-opts"></div>
+    <div class="feedback" id="q-fb"></div>
+    <button class="btn btn-primary next" id="btn-next" hidden>Siguiente</button>
+  </section>
+
+  <!-- RESULTADO -->
+  <section class="card" id="view-result" hidden>
+    <div class="result">
+      <div class="eyebrow" id="r-eyebrow">Resultado</div>
+      <div class="score"><span id="r-score">0</span><small>/8</small></div>
+      <h2 id="r-title" style="margin-top:10px"></h2>
+      <p class="lead" id="r-msg"></p>
+      <div class="prize" id="r-prize" hidden><span class="big">🎁</span>¡Ganaste! Mostrá esta pantalla en el stand de Xperts.<div class="code" id="r-code"></div></div>
+      <div class="noprize" id="r-noprize" hidden>Esta vez no llegaste a 5, pero pasá igual por el stand: te contamos cómo un WMS bien implementado hace estas respuestas obvias.</div>
+      <div class="saving" id="r-saving">Guardando tu participación…</div>
+      <button class="btn btn-ghost" id="btn-again" style="margin-top:14px">Jugar con otra persona</button>
+    </div>
+  </section>
+
+  <p class="foot">Xperts IT Consulting · Partner oficial TOTVS ·<a href="https://xpertsconsulting.com" target="_blank" rel="noopener">xpertsconsulting.com</a></p>
+</div>
+
+<script>
+// ---- Configuración de la base de datos (Google Form "Trivia Xperts - Feria Logística (registros)") ----
+const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdON0lugrypayLOBTaPldVp7e9StblOEM5B5CTs5LkT3kUC4g/formResponse";
+const ENTRY = { nombre:"entry.1935498161", email:"entry.237084919", cargo:"entry.1352493886", empresa:"entry.1505688874", puntaje:"entry.560000372" };
+const TOTAL = 8, WIN = 5;
+
+// ---- Banco de preguntas (se eligen 8 al azar de estas 12) ----
+const BANK = [
+  {q:"¿Qué significa la sigla WMS?", o:["Warehouse Management System","Web Marketing Software","World Mail Service","Wifi Muy Seguro"], a:0,
+   fb:"El WMS es el sistema que gestiona todo lo que pasa dentro del depósito: ingreso, ubicación, picking y despacho."},
+  {q:"En un depósito, ¿qué es el 'picking'?", o:["Elegir el camión más lindo","Armar un pedido tomando productos de sus ubicaciones","Pintar las estanterías","Contar las sillas de la oficina"], a:1,
+   fb:"Picking = preparar pedidos. Es la tarea que más tiempo consume en un depósito y donde un WMS más ayuda."},
+  {q:"Si un producto tiene fecha de vencimiento, ¿qué regla conviene usar para despacharlo?", o:["El más pesado primero","El que esté más cerca de la puerta","FEFO: primero el que vence antes","El que tenga el envase más lindo"], a:2,
+   fb:"FEFO (First Expired, First Out). El WMS lo aplica solo, sin depender de la memoria del operario."},
+  {q:"¿Qué es un código de barras / QR en logística?", o:["Una decoración del packaging","Una forma de identificar productos y ubicaciones para escanearlos","Un tipo de etiqueta para regalos","Un código secreto del gerente"], a:1,
+   fb:"Escanear en lugar de tipear reduce errores a casi cero y acelera cada movimiento."},
+  {q:"¿Qué es un ERP?", o:["Un sistema que integra finanzas, compras, ventas, stock y más en una sola base","Una impresora de etiquetas","Un tipo de autoelevador","Una red social para empresas"], a:0,
+   fb:"El ERP (como TOTVS Protheus) es el corazón administrativo; el WMS se integra con él para que el stock sea uno solo."},
+  {q:"En distribución, ¿qué es la 'última milla'?", o:["El último kilómetro de la ruta 9","El tramo final de la entrega, desde el centro de distribución hasta el cliente","La milla que corre el chofer para calentar","Un impuesto a los camiones"], a:1,
+   fb:"La última milla es el tramo más caro y complejo de la cadena. Rutear y confirmar entregas con software lo abarata."},
+  {q:"¿Qué es la trazabilidad?", o:["Dibujar el plano del depósito","Poder saber de dónde vino y a dónde fue cada producto o lote","Trazar la ruta del camión con un marcador","Un tipo de seguro de carga"], a:1,
+   fb:"Trazabilidad por lote o serie: clave en alimentos, farma y para cualquier recall."},
+  {q:"¿Qué es un 'inventario cíclico'?", o:["Contar todo el depósito una vez al año cerrando la operación","Contar porciones pequeñas del stock todos los días sin frenar la operación","Contar las bicicletas de los empleados","Inventariar solo los productos redondos"], a:1,
+   fb:"Con conteos cíclicos el stock del sistema coincide con el físico sin parar el depósito."},
+  {q:"¿Qué es el 'cross-docking'?", o:["Cruzar la calle con el pallet","Recibir mercadería y despacharla casi sin almacenarla","Estacionar dos camiones cruzados","Un tipo de piso del depósito"], a:1,
+   fb:"Cross-docking: entra por un muelle y sale por otro. Menos stock, menos manipuleo, más velocidad."},
+  {q:"¿Qué es un SKU?", o:["Un código único que identifica cada producto o variante","Un tipo de pallet europeo","La sigla de un sindicato de camioneros","Un sistema de seguridad del depósito"], a:0,
+   fb:"SKU = Stock Keeping Unit. Cada talle, color o presentación tiene el suyo."},
+  {q:"Un dashboard de Business Intelligence sirve para…", o:["Decorar la pared de la gerencia","Ver en tiempo real indicadores como pedidos despachados, errores y stock crítico","Reemplazar a los operarios","Cargar facturas a mano"], a:1,
+   fb:"KPIs en tiempo real para decidir con datos, sin esperar el Excel del lunes."},
+  {q:"¿Qué es un 'stock mínimo' o punto de reposición?", o:["El stock que nadie quiere","La cantidad a partir de la cual el sistema avisa que hay que reponer","Lo que entra en un solo pallet","El stock del empleado más nuevo"], a:1,
+   fb:"El ERP calcula el punto de pedido y dispara la orden de compra antes de que falte."},
+];
+
+const $ = id => document.getElementById(id);
+const views = ["intro","form","quiz","result"];
+function show(v){ views.forEach(x => $("view-"+x).hidden = (x!==v)); window.scrollTo({top:0}); }
+
+let player = null, qs = [], idx = 0, score = 0;
+
+$("btn-start").onclick = () => show("form");
+
+$("reg").addEventListener("submit", e => {
+  e.preventDefault();
+  const f = { nombre:$("f-nombre").value.trim(), email:$("f-email").value.trim(), cargo:$("f-cargo").value.trim(), empresa:$("f-empresa").value.trim() };
+  let ok = true;
+  const set = (k,msg) => { $("e-"+k).textContent = msg; if(msg) ok=false; };
+  set("nombre", f.nombre.length<3 ? "Escribí tu nombre completo." : "");
+  set("email", /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email) ? "" : "Revisá el email, parece incompleto.");
+  set("cargo", f.cargo ? "" : "Contanos tu cargo.");
+  set("empresa", f.empresa ? "" : "¿En qué empresa trabajás?");
+  if(!ok) return;
+  player = f;
+  send("jugando").catch(() => {});
+  startQuiz();
+});
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function startQuiz(){
+  qs = shuffle(BANK.slice()).slice(0,TOTAL).map(q => {
+    const opts = q.o.map((t,i)=>({t, ok:i===q.a}));
+    return { q:q.q, fb:q.fb, opts:shuffle(opts) };
+  });
+  idx = 0; score = 0;
+  show("quiz"); render();
+}
+
+function render(){
+  const q = qs[idx];
+  $("p-label").textContent = `Pregunta ${idx+1} de ${TOTAL}`;
+  $("p-score").textContent = `${score} ${score===1?"acierto":"aciertos"}`;
+  $("p-bar").style.width = (idx/TOTAL*100)+"%";
+  $("q-text").textContent = q.q;
+  $("q-fb").innerHTML = "";
+  $("btn-next").hidden = true;
+  const box = $("q-opts"); box.innerHTML = "";
+  q.opts.forEach((o,i) => {
+    const b = document.createElement("button");
+    b.className = "opt"; b.type = "button";
+    b.innerHTML = `<span class="k">${"ABCD"[i]}</span><span></span>`;
+    b.lastChild.textContent = o.t;
+    b.onclick = () => answer(i);
+    box.appendChild(b);
+  });
+}
+
+function answer(i){
+  const q = qs[idx];
+  const btns = [...$("q-opts").children];
+  btns.forEach((b,j) => { b.disabled = true; if(q.opts[j].ok) b.classList.add("right"); else if(j===i) b.classList.add("wrong"); });
+  const hit = q.opts[i].ok;
+  if(hit) score++;
+  $("p-score").textContent = `${score} ${score===1?"acierto":"aciertos"}`;
+  $("q-fb").innerHTML = `<b>${hit ? "¡Correcto! " : "Casi. "}</b>` + q.fb;
+  $("btn-next").textContent = idx===TOTAL-1 ? "Ver mi resultado" : "Siguiente";
+  $("btn-next").hidden = false;
+}
+
+$("btn-next").onclick = () => { idx++; if(idx<TOTAL) render(); else finish(); };
+
+function finish(){
+  $("p-bar").style.width = "100%";
+  const won = score >= WIN;
+  $("r-score").textContent = score;
+  if(score===TOTAL){ $("r-title").textContent = "¡Crack absoluto del depósito!"; $("r-msg").textContent = "8 de 8. Deberías estar dando esta trivia vos."; }
+  else if(won){ $("r-title").textContent = "¡Premio ganado!"; $("r-msg").textContent = `${score} aciertos. Sabés de logística y de software, buena combinación.`; }
+  else if(score>=3){ $("r-title").textContent = "Estuviste cerca"; $("r-msg").textContent = `${score} de 8. Un par más y era tuyo.`; }
+  else { $("r-title").textContent = "Esto se arregla con un buen WMS"; $("r-msg").textContent = `${score} de 8. Lo bueno: para eso estamos nosotros.`; }
+  $("r-prize").hidden = !won; $("r-noprize").hidden = won;
+  if(won){ $("r-code").textContent = "XP-" + (player.nombre.split(" ")[0]||"").toUpperCase().slice(0,6) + "-" + score; }
+  show("result");
+  save(won);
+}
+
+// Envío silencioso al Google Form. Se llama dos veces: al registrarse (puntaje "jugando")
+// y al terminar (puntaje final). En la planilla, la última fila de cada email es la válida.
+function send(puntaje){
+  const fd = new FormData();
+  fd.append(ENTRY.nombre, player.nombre); fd.append(ENTRY.email, player.email);
+  fd.append(ENTRY.cargo, player.cargo); fd.append(ENTRY.empresa, player.empresa);
+  fd.append(ENTRY.puntaje, puntaje);
+  return fetch(FORM_URL, { method:"POST", mode:"no-cors", body:fd });
+}
+function save(won){
+  $("r-saving").textContent = "Guardando tu participación…";
+  send(`${score}/${TOTAL}` + (won ? " - GANÓ" : ""))
+    .then(() => { $("r-saving").textContent = "Participación registrada. ¡Gracias por jugar!"; })
+    .catch(() => { $("r-saving").textContent = "Mostrá esta pantalla en el stand y lo anotamos."; });
+}
+
+$("btn-again").onclick = () => { $("reg").reset(); player=null; show("intro"); };
+</script>
+</body></html>
